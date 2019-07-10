@@ -1,0 +1,200 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dreaming Spanish videos by vocabulary frequency</title>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <!-- production version -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
+  <!-- development version -->
+  <script src="//unpkg.com/vue@latest/dist/vue.min.js"></script>
+
+  <script defer src="index.js"></script>
+  <style type="text/css">
+    body {
+      color: #555555;
+    }
+
+    h1 {
+      margin-top: 30px;
+      margin-bottom: 30px;
+    }
+
+    td.pic-cell {
+      padding: 0;
+    }
+
+    td.pic-cell img {
+      height: 49px;
+    }
+
+    /* Tooltip container */
+    .mytooltip {
+      position: relative;
+    }
+
+    .mytooltip .tooltiplabel {
+      border-bottom: 1px dotted white; /* If you want dots under the hoverable text */
+    }
+
+    /* Tooltip text */
+    .mytooltip .tooltiptext {
+      visibility: hidden;
+      width: 120px;
+      background-color: #555;
+      color: #fff;
+      text-align: center;
+      padding: 5px;
+      border-radius: 6px;
+
+      /* Position the tooltip text */
+      position: absolute;
+      z-index: 1;
+      top: 125%;
+      left: 50%;
+      margin-left: -60px;
+
+      /* Fade in tooltip */
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    /* Tooltip arrow */
+    .mytooltip .tooltiptext::after {
+      content: "";
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: transparent transparent #555 transparent;
+    }
+
+    /* Show the tooltip text when you mouse over the tooltip container */
+    .mytooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .toggle {
+      cursor: pointer;
+    }
+
+    .toggle::before {
+      content: ' ';
+      display: inline-block;
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-left: 5px solid currentColor;
+      vertical-align: middle;
+      margin-right: .7rem;
+      transform: translateY(-2px);
+      transition: transform .2s ease-out;
+    }
+
+    .toggle.open::before {
+      transform: rotate(90deg) translateX(-3px);
+    }
+
+    .footer {
+      margin-top: 50px;
+      margin-bottom: 20px;
+      text-align: center;
+      color: #bbbbbb;
+    }
+
+    .footer a {
+      margin-top: 50px;
+      margin-bottom: 20px;
+      text-align: center;
+      color: #888888;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="app">
+    <div class="text-center">
+      <img src="logo.png" width="300">
+      <br>
+      <h1>Videos by vocabulary level</h1>
+    </div>
+    <p>This is a list of all <b>public</b> Dreaming Spanish videos sorted by the difficulty of their vocabulary. Try watching a few videos at the easier and harder end of your preferred level, and let us know if you think it makes a difference. The level of each video shows how many of the most frequent Spanish words you need to know to understand 95% of the words that appear in the video. The frequency list used is the one at <a href="https://www.corpusdelespanol.org/web-dial/">Corpus del Español: Web/Dialects</a>. If you find this useful, don't forget to <b>contribute to our project on <a href="https://patreon.com/DreamingSpanish">Patreon</a>!</b></p>
+    <br>
+    <h2 @click="showSuperbeg = !showSuperbeg" class="toggle" v-bind:class="{ open: showSuperbeg }">Superbeginner videos ({{ superbeg.length }})</h2>
+    <table class="table table-hover" v-if="showSuperbeg">
+      <thead class="bg-info text-white">
+        <tr>
+          <th scope="col">Video</th>
+          <th scope="col"></th>
+          <th scope="col" class="mytooltip"><span class="tooltiplabel">Level (needed vocabulary)</span><span class="tooltiptext">95% of words in the video are within this number of most common words.</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="video in superbeg">
+          <td class="pic-cell"><div class="img-container"><img v-bind:src="'https://img.youtube.com/vi/' + video.id + '/mqdefault.jpg'"></div></td>
+          <td scope="row"><a v-bind:href="'https://www.youtube.com/watch?v=' + video.id">{{ video.title }}</a></th>
+          <td>{{ video.level }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <br>
+    <h2 @click="showBeg = !showBeg" class="toggle" v-bind:class="{ open: showBeg }">Beginner videos ({{ beg.length }})</h2>
+    <table class="table table-hover" v-if="showBeg">
+      <thead class="bg-success text-white">
+        <tr>
+          <th scope="col">Video</th>
+          <th scope="col"></th>
+          <th scope="col" class="mytooltip"><span class="tooltiplabel">Level (needed vocabulary)</span><span class="tooltiptext">95% of words in the video are within this number of most common words.</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="video in beg">
+          <td class="pic-cell"><div class="img-container"><img v-bind:src="'https://img.youtube.com/vi/' + video.id + '/mqdefault.jpg'"></div></td>
+          <td scope="row"><a v-bind:href="'https://www.youtube.com/watch?v=' + video.id">{{ video.title }}</a></td>
+          <td>{{ video.level }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <br>
+    <h2 @click="showInt = !showInt" class="toggle" v-bind:class="{ open: showInt }">Intermediate videos ({{ int.length }})</h2>
+    <table class="table table-hover" v-if="showInt">
+      <thead class="bg-primary text-white">
+        <tr>
+          <th scope="col">Video</th>
+          <th scope="col"></th>
+          <th scope="col" class="mytooltip"><span class="tooltiplabel">Level (needed vocabulary)</span><span class="tooltiptext">95% of words in the video are within this number of most common words.</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="video in int">
+          <td class="pic-cell"><div class="img-container"><img v-bind:src="'https://img.youtube.com/vi/' + video.id + '/mqdefault.jpg'"></div></td>
+          <td scope="row"><a v-bind:href="'https://www.youtube.com/watch?v=' + video.id">{{ video.title }}</a></td>
+          <td>{{ video.level }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <br>
+    <h2 @click="showAdv = !showAdv" class="toggle" v-bind:class="{ open: showAdv }">Advanced videos ({{ adv.length }})</h2>
+    <table class="table table-hover" v-if="showAdv">
+      <thead class="bg-dark text-white">
+        <tr>
+          <th scope="col">Video</th>
+          <th scope="col"></th>
+          <th scope="col" class="mytooltip"><span class="tooltiplabel">Level (needed vocabulary)</span><span class="tooltiptext">95% of words in the video are within this number of most common words.</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="video in adv">
+          <td class="pic-cell"><div class="img-container"><img v-bind:src="'https://img.youtube.com/vi/' + video.id + '/mqdefault.jpg'"></div></td>
+          <td scope="row"><a v-bind:href="'https://www.youtube.com/watch?v=' + video.id">{{ video.title }}</a></td>
+          <td>{{ video.level }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="footer">Copyright <a href="https://www.youtube.com/DreamingSpanish">Dreaming Spanish</a> 2019 - <a href="mailto:pablo@dreamingspanish.com">Contact us</a></div>
+</body>
+</html>
